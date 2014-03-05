@@ -29,7 +29,7 @@ static const byte LARGE_DIGITS[10][7] = {
   { 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b10001, 0b01110 }  /* 9 */
 };
 
-static const byte COCK[2][6] {
+static const byte COCK[2][6] = {
   { 0b00000, 0b00011, 0b10000, 0b10100, 0b10101, 0b01110 },
   { 0b1110, 0b1001, 0b0011, 0b1001, 0b1110, 0b0000 }
 };
