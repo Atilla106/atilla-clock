@@ -68,3 +68,13 @@ void Font::draw_cock(uint8_t x, uint8_t y, uint8_t size) {
   for (i = 0; i < 6; ++i)
     _ht1632c.plot(x, y + i, 0);
 }
+
+void Font::clearScreen(uint8_t minx,uint8_t maxx,uint8_t miny,uint8_t maxy){
+	int i,j;
+	for (i=minx; i< maxx; i++){
+		for(j=miny; j< maxy; j++){
+			_ht1632c.plot(i,j,0);
+		}
+	}
+}
+

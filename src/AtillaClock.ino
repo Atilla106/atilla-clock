@@ -70,7 +70,7 @@ void loop() {
     font.print_large_clock_number(11, 0, clock.hour);
   }
 
-  /*if (cock.increase) {
+  if (cock.increase) {
     if (cock.size == cock.max_size)
       cock.increase = false;
     else
@@ -83,5 +83,5 @@ void loop() {
       cock.size--;
   }
 
-  font.draw_cock(1, 9, cock.size);*/
+  font.draw_cock(1, 9, cock.size);
 }

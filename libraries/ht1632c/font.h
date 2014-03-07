@@ -49,6 +49,7 @@ public:
   void print_large_colon(uint8_t x, uint8_t y);
 
   void draw_cock(uint8_t x, uint8_t y, uint8_t size);
+  void clearScreen(uint8_t minx,uint8_t maxx,uint8_t miny,uint8_t maxy);
 };
 
 #endif
