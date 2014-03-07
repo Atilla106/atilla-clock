@@ -2,7 +2,7 @@
 
 #include <ht1632c.h>
 #include <font.h>
-
+#include <affichage.h>
 #include <RTClib.h>
 
 #define NUM_DISPLAYS 2
@@ -63,62 +63,56 @@ void setup() {
 
 void loop() {
   DateTime now = ds1307.now();
-  if(i>3)
-    i=0;
   if (now.minute() != clock.minute) {
     clock.minute = now.minute();
     font.print_large_clock_number(27, 0, clock.minute);
     Serial.println(i);
+    i++;
     font.clearScreen(0,48,8,16);
-    switch(i){
-      case 0:
-         penis = false;
-         if(now.day() != clock.day)
-           clock.day = now.day();
-         font.print_large_clock_number(5, 8, clock.day);
-         font.print_small_letters(17,8,'[');
-         if(now.month() != clock.month)
-            clock.month = now.month();
-          font.print_large_clock_number(19, 8, clock.month);
-          font.print_small_letters(31,8,'[');
-         
-         if(now.year() % 100 != clock.year)
-             clock.year = now.year() % 100;
-         font.print_large_clock_number(33, 8, clock.year);
-         i++;
-         break;
-      case 1:
-        penis=true;
-        i++;
-        break;
-      case 2:
-        penis=false;
-        font.print_large_clock_number(11,8,13);
-        font.print_large_clock_number(24,8,37);
-        i++;
-        break;
-      case 3:
-        font.print_small_letters(1,9,'a');
-        font.print_small_letters(9,9,'t');
-        font.print_small_letters(17,9,'i');
-        font.print_small_letters(25,9,'l');
-        font.print_small_letters(33,9,'l');
-        font.print_small_letters(41,9,'a');
-        i++;
-        break;
-      default:
-        penis=false;
-        i=0;
-        break;
-    }
   }
 
   if (now.hour() != clock.hour) {
     clock.hour = now.hour();
     font.print_large_clock_number(11, 0, clock.hour);
   }      
-  
- 
+  if(i>3)
+    i=0;
+   switch(i){
+      case 0:
+         penis = false;
+         if(now.day() != clock.day)
+           clock.day = now.day();
+         font.print_large_clock_number(2, 8, clock.day);
+         font.print_small_letters(13,8,26);
+         if(now.month() != clock.month)
+            clock.month = now.month();
+          font.print_large_clock_number(18, 8, clock.month);
+          font.print_small_letters(29,8,26);
+         
+         if(now.year() % 100 != clock.year)
+             clock.year = now.year() % 100;
+         font.print_large_clock_number(34, 8, clock.year);
+         break;
+      case 1:
+        penis=true;
+        break;
+      case 2:
+        penis=false;
+        font.print_large_clock_number(11,8,13);
+        font.print_large_clock_number(24,8,37);
+        break;
+      case 3:
+        font.print_small_letters(10,9,'a');
+        font.print_small_letters(15,9,'t');
+        font.print_small_letters(20,9,'i');
+        font.print_small_letters(25,9,'l');
+        font.print_small_letters(30,9,'l');
+        font.print_small_letters(35,9,'a');
+        break;
+      default:
+        penis=false;
+        break;
+    }
   if(penis){
      if (cock.increase) {
         if (cock.size == cock.max_size)
