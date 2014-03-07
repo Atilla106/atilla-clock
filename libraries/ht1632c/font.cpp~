@@ -90,7 +90,5 @@ void Font::print_small_letters(uint8_t x, uint8_t y,char c){
     		for (j = 0; j < 5; ++j)
       			_ht1632c.plot(x + (4 - j), y + i, (SMALL_LETTERS[c-65][i] >> j) & 1);
      }
-     else{
-     }
 
 }
