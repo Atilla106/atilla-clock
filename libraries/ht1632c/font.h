@@ -3,6 +3,7 @@
 #ifndef __HT1632C_FONT_H__
 #define __HT1632C_FONT_H__
 
+
 static const byte SMALL_DIGITS[10][5] = {
   { 0b111, 0b101, 0b101, 0b101, 0b111 }, /* 0 */
   { 0b001, 0b001, 0b001, 0b001, 0b001 }, /* 1 */
@@ -31,7 +32,7 @@ static const byte LARGE_DIGITS[10][7] = {
 
 
 static const byte SMALL_LETTERS[27][5] = {
-  { 0b00100, 0b01010, 0b01010, 0b01110, 0b01010 }, /* A */
+  { 0b00100, 0b01010, 0b01110, 0b01010, 0b01010 }, /* A */
   { 0b11110, 0b10001, 0b11110, 0b10001, 0b11110 }, /* B */
   { 0b01111, 0b10000, 0b10000, 0b10000, 0b01111 }, /* C */
   { 0b11110 ,0b10001, 0b10001, 0b10001, 0b11110 }, /* D */
@@ -39,10 +40,10 @@ static const byte SMALL_LETTERS[27][5] = {
   { 0b11111, 0b10000, 0b11100, 0b10000, 0b10000 }, /* F */
   { 0b01111, 0b10000, 0b10011, 0b10001, 0b01111 }, /* G */
   { 0b10001, 0b10001, 0b11111, 0b10001, 0b10001 }, /* H */
-  { 0b11111, 0b00100, 0b00100, 0b00100, 0b11111 }, /* I */
+  { 0b01110, 0b00100, 0b00100, 0b00100, 0b01110 }, /* I */
   { 0b11111, 0b00010, 0b00010, 0b10010, 0b01100 }, /* J */
   { 0b10001, 0b10010, 0b11100, 0b10010, 0b10001 }, /* K */
-  { 0b10000, 0b10000, 0b10000, 0b10000, 0b11111 }, /* L */
+  { 0b10000, 0b10000, 0b10000, 0b10000, 0b11110 }, /* L */
   { 0b10001, 0b11011, 0b10101, 0b10001, 0b10001 }, /* M */
   { 0b10001, 0b11001, 0b10101, 0b10011, 0b10001 }, /* N */
   { 0b01110, 0b10001, 0b10001, 0b10001, 0b01110 }, /* O */
@@ -50,7 +51,7 @@ static const byte SMALL_LETTERS[27][5] = {
   { 0b01110, 0b10001, 0b10101, 0b10010, 0b01101 }, /* Q */
   { 0b11110, 0b10001, 0b11110, 0b10001, 0b10001 }, /* R */
   { 0b01111, 0b10000, 0b01110, 0b00001, 0b11110 }, /* S */
-  { 0b11111, 0b00100, 0b00100, 0b00100, 0b00100 }, /* T */
+  { 0b01110, 0b00100, 0b00100, 0b00100, 0b00100 }, /* T */
   { 0b10001, 0b10001, 0b10001, 0b10001, 0b01110 }, /* U */
   { 0b10001, 0b10001, 0b10001, 0b01010, 0b00100 }, /* V */
   { 0b10001, 0b10001, 0b10101, 0b11011, 0b10001 }, /* W */
@@ -83,6 +84,17 @@ public:
   void draw_cock(uint8_t x, uint8_t y, uint8_t size);
   void clearScreen(uint8_t minx,uint8_t maxx,uint8_t miny,uint8_t maxy);
   void print_small_letters(uint8_t x, uint8_t y,char c);
+};
+
+class Cock {
+	protected:
+  		uint8_t size;
+  		uint8_t min_size;
+  		uint8_t max_size;
+  		bool increase;
+  	public:
+  		Cock(uint8_t size, uint8_t min_size, uint8_t max_size);
+  		void draw(uint8_t x, uint8_t y,Font font);
 };
 
 #endif

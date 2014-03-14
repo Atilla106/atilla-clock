@@ -97,3 +97,25 @@ void Font::print_small_letters(uint8_t x, uint8_t y,char c){
      }
 
 }
+
+void Cock::draw(uint8_t x, uint8_t y,Font font){
+	if (this->increase) {
+        if (this->size == this->max_size)
+            this->increase = false;
+      else
+        size++;
+    }
+    else {
+        if (size == min_size)
+          increase = true;
+        else
+          size--;
+    }
+    font.draw_cock(x, y, size);
+}
+
+Cock::Cock(uint8_t size, uint8_t min_size, uint8_t max_size){
+	size = size;
+	min_size = min_size;
+	max_size = max_size;
+}

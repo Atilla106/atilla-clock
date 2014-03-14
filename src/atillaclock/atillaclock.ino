@@ -22,19 +22,13 @@ struct Clock {
 RTC_DS1307 ds1307;
 Clock clock;
 
-struct Cock {
-  uint8_t size;
-  uint8_t min_size, max_size;
-  bool increase;
-};
 int i=0;
 boolean penis=false;
-Cock cock = { 7, 7, 35, true };
+Cock cock (7, 7, 35);
 
 void setup() {
   Serial.begin(9600);
   Wire.begin();
-
   randomSeed(analogRead(1));
 
   digitalWrite(2, HIGH);
@@ -74,12 +68,11 @@ void loop() {
   if (now.hour() != clock.hour) {
     clock.hour = now.hour();
     font.print_large_clock_number(11, 0, clock.hour);
-  }      
+  }  
   if(i>3)
     i=0;
    switch(i){
       case 0:
-         penis = false;
          if(now.day() != clock.day)
            clock.day = now.day();
          font.print_large_clock_number(2, 8, clock.day);
@@ -94,10 +87,13 @@ void loop() {
          font.print_large_clock_number(34, 8, clock.year);
          break;
       case 1:
-        penis=true;
+        if(penis){
+          cock.draw(1,9,font);
+          penis = false;
+        }else
+          i++;
         break;
       case 2:
-        penis=false;
         font.print_large_clock_number(11,8,13);
         font.print_large_clock_number(24,8,37);
         break;
@@ -110,23 +106,6 @@ void loop() {
         font.print_small_letters(35,9,'a');
         break;
       default:
-        penis=false;
         break;
     }
-  if(penis){
-     if (cock.increase) {
-        if (cock.size == cock.max_size)
-            cock.increase = false;
-      else
-        cock.size++;
-    }
-    else {
-        if (cock.size == cock.min_size)
-          cock.increase = true;
-        else
-          cock.size--;
-    }
-    font.draw_cock(1, 9, cock.size);
-  }
-  
 }
