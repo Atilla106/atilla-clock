@@ -11,4 +11,4 @@ Converts a .PBM file into a .CLK format, transition file readable by the clock.
 The 48 Bytes are output as follows:
 
 + Line per line (48 pixels per line)
-+ 6 Bytes per line, each bit read from left to right (e.g: 01100000 will output 2 red pixels at position 1 and 2, indiced from 0)
++ 6 Bytes per line, each bit read from right to left (e.g: 01100000 will output 2 red pixels at position 5 and 6, indiced from 0)

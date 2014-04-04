@@ -6,7 +6,7 @@ def chunks(data):
   return [data[i:i+8] for i in xrange(0, len(data), 8)]
 
 def bits2byte(bits):
-  return sum(int(bits[i]) << (7 - i) for i in xrange(len(bits)))
+  return sum(int(bits[i]) << i for i in xrange(len(bits)))
 
 if __name__ == '__main__':
   with open(argv[1]) as f:

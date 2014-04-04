@@ -54,7 +54,7 @@ bool Transition::transition(const char * filepath, HT1632C &ht1632c) {
         current_byte = file.read();
 
         for (k = 0; k < 8; ++k, current_byte >>= 1)
-          ht1632c.plot(x + (7 - k), y + START_Y, current_byte & 1);
+          ht1632c.plot(x + k, y + START_Y, current_byte & 1);
       }
 
     if (millis() < start_millis) { // There was an overflow
