@@ -38,3 +38,23 @@ void Font::print_large_colon(uint8_t x, uint8_t y) {
   _ht1632c.plot(x, y + 3, 1);
   _ht1632c.plot(x, y + 5, 1);
 }
+
+void Font::print_small_letters(uint8_t x, uint8_t y,char c){
+	int i,j;
+	if (c >= 97){
+		for (i = 0; i < 5; ++i)
+    		for (j = 0; j < 5; ++j)
+      			_ht1632c.plot(x + (4 - j), y + i, (SMALL_LETTERS[c-97][i] >> j) & 1);
+     }
+     else if(c >= 65){
+     	for (i = 0; i < 5; ++i)
+    		for (j = 0; j < 5; ++j)
+      			_ht1632c.plot(x + (4 - j), y + i, (SMALL_LETTERS[c-65][i] >> j) & 1);
+     }
+     else{
+     	for (i = 0; i < 5; ++i)
+    		for (j = 0; j < 5; ++j)
+      			_ht1632c.plot(x + (4 - j), y + i, (SMALL_LETTERS[c][i] >> j) & 1);
+     }
+
+}
