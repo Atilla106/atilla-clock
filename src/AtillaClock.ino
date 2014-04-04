@@ -1,3 +1,4 @@
+#include <SD.h>
 #include <Wire.h>
 
 #include <ht1632c.h>
@@ -5,12 +6,14 @@
 
 #include <RTClib.h>
 
+#include <transition.h>
+
 #define NUM_DISPLAYS 2
 #define HT1632C_BRIGHTNESS 15
-#define HT1632C_DATA 10
-#define HT1632C_WRCLK 11
+#define HT1632C_DATA 9
+#define HT1632C_WRCLK 8
 
-static uint8_t HT1632C_CS[NUM_DISPLAYS] = { 4, 5 };
+static uint8_t HT1632C_CS[NUM_DISPLAYS] = { 5, 6 };
 
 HT1632C ht1632c = HT1632C(HT1632C_WRCLK, HT1632C_DATA, HT1632C_CS, NUM_DISPLAYS);
 Font font = Font(ht1632c);
@@ -22,16 +25,10 @@ struct Clock {
 RTC_DS1307 ds1307;
 Clock clock;
 
-struct Cock {
-  uint8_t size;
-  uint8_t min_size, max_size;
-  bool increase;
-};
-
-Cock cock = { 7, 7, 35, true };
-
 void setup() {
   Serial.begin(9600);
+  while (!Serial);
+
   Wire.begin();
 
   randomSeed(analogRead(1));
@@ -39,12 +36,14 @@ void setup() {
   digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
 
+  /* LED MATRICES */
   ht1632c.setup(HT1632C_BRIGHTNESS);
 
+  /* RTC MODULE */
   ds1307.begin(); //start RTC Clock
 
   if (!ds1307.isrunning()) {
-    Serial.println("RTC is NOT running!");
+    Serial.println(F("RTC is NOT running!"));
     ds1307.adjust(DateTime(__DATE__, __TIME__));
   }
 
@@ -52,9 +51,20 @@ void setup() {
   clock.hour = now.hour();
   clock.minute = now.minute();
 
+  /* SD CARD */
+
+  pinMode(10, OUTPUT);
+
+  if (!SD.begin(4)) {
+    Serial.println(F("SD Card cannot be initialized!"));
+    return; // We're fucked up
+  }
+
   font.print_large_clock_number(11, 0, clock.hour);
   font.print_large_colon(23, 0);
   font.print_large_clock_number(27, 0, clock.minute);
+
+  Serial.println("YOLOL");
 }
 
 void loop() {
@@ -63,25 +73,11 @@ void loop() {
   if (now.minute() != clock.minute) {
     clock.minute = now.minute();
     font.print_large_clock_number(27, 0, clock.minute);
+    Transition::transition("TEST.CLK", ht1632c);
   }
 
   if (now.hour() != clock.hour) {
     clock.hour = now.hour();
     font.print_large_clock_number(11, 0, clock.hour);
   }
-
-  if (cock.increase) {
-    if (cock.size == cock.max_size)
-      cock.increase = false;
-    else
-      cock.size++;
-  }
-  else {
-    if (cock.size == cock.min_size)
-      cock.increase = true;
-    else
-      cock.size--;
-  }
-
-  font.draw_cock(1, 9, cock.size);
 }

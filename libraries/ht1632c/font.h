@@ -29,11 +29,6 @@ static const byte LARGE_DIGITS[10][7] = {
   { 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b10001, 0b01110 }  /* 9 */
 };
 
-static const byte COCK[2][6] {
-  { 0b00000, 0b00011, 0b10000, 0b10100, 0b10101, 0b01110 },
-  { 0b1110, 0b1001, 0b0011, 0b1001, 0b1110, 0b0000 }
-};
-
 class Font {
 private:
   HT1632C &_ht1632c;
@@ -47,8 +42,6 @@ public:
   void print_large_clock_number(uint8_t x, uint8_t y, uint8_t n);
 
   void print_large_colon(uint8_t x, uint8_t y);
-
-  void draw_cock(uint8_t x, uint8_t y, uint8_t size);
 };
 
 #endif
