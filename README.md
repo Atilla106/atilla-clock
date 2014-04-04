@@ -48,5 +48,7 @@ We loop infinitely on this :
 Frame system
 ------------
 
+Each *run* is actually a finite set of frames, a single frame being
+
 Structure of a packet
 ---------------------
