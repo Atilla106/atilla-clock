@@ -75,6 +75,18 @@ void HT1632C::plot(uint8_t x, uint8_t y, bool value) {
   _send_data(d, addr, _shadowRAM[d * 96 + addr]);
 }
 
+uint8_t HT1632C::get_x_y(uint8_t x, uint8_t y) {
+  uint8_t addr, bitval, d;
+
+  d = x / 24;
+  x %= 24;
+
+  bitval = 8 >> (y & 3); // Compute which bit will need set
+  addr = (x << 2) + (y >> 2); // Compute which memory word this is in
+
+  return (_shadowRAM[(d * 96) + addr] & bitval) != 0;
+}
+
 void HT1632C::_chip_select(uint8_t n) {
   digitalWrite(n, 0);
 }

@@ -44,6 +44,8 @@ public:
 
   void plot(uint8_t x, uint8_t y, bool value);
 
+  uint8_t get_x_y(uint8_t x, uint8_t y);
+
 private:
   uint8_t _pinWR, _pinDATA;
   uint8_t _pinCS[4];

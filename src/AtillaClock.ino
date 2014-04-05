@@ -64,7 +64,7 @@ void setup() {
   font.print_large_colon(23, 0);
   font.print_large_clock_number(27, 0, clock.minute);
 
-  Serial.println("YOLOL");
+  Serial.println("Everything is working!");
 }
 
 void loop() {
