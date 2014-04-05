@@ -73,7 +73,12 @@ void loop() {
   if (now.minute() != clock.minute) {
     clock.minute = now.minute();
     font.print_large_clock_number(27, 0, clock.minute);
-    Transition::transition("TEST.CLK", ht1632c);
+
+    if (Transition::transition("RED.CLK", ht1632c)) {
+      ht1632c.clear();
+      font.print_large_clock_number(11, 0, clock.hour);
+      font.print_large_clock_number(27, 0, clock.minute);
+    }
   }
 
   if (now.hour() != clock.hour) {

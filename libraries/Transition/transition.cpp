@@ -3,7 +3,7 @@
 Header::Header(File &file) {
   uint8_t tmp_time[2];
 
-  _number_of_frames = file.read();
+  _type_number_of_frames = file.read();
 
   tmp_time[0] = file.read();
   tmp_time[1] = file.read();
@@ -12,11 +12,15 @@ Header::Header(File &file) {
   _total_time <<= 8;
   _total_time += (uint16_t)tmp_time[1];
 
-  _delay = (unsigned long)_total_time / (unsigned long)_number_of_frames;
+  _delay = (unsigned long)_total_time / (unsigned long)get_number_of_frames();
+}
+
+uint8_t Header::get_type() {
+  return _type_number_of_frames & 1;
 }
 
 uint8_t Header::get_number_of_frames() {
-  return _number_of_frames;
+  return _type_number_of_frames >> 1;
 }
 
 uint16_t Header::get_total_time() {
@@ -36,6 +40,7 @@ bool Transition::transition(const char * filepath, HT1632C &ht1632c) {
   /* HEADER */
 
   Header header = Header(file);
+  uint8_t start_y = header.get_type() == TYPE_SMALL ? 8 : 0;
 
   /* DATA */
 
@@ -49,12 +54,12 @@ bool Transition::transition(const char * filepath, HT1632C &ht1632c) {
   while (n < header.get_number_of_frames()) {
     start_millis = millis();
 
-    for (y = 0; y < 8; ++y)
+    for (y = start_y; y < 16; ++y)
       for (x = 0; x < 48; x += 8) {
         current_byte = file.read();
 
         for (k = 0; k < 8; ++k, current_byte >>= 1)
-          ht1632c.plot(x + k, y + START_Y, current_byte & 1);
+          ht1632c.plot(x + k, y, current_byte & 1);
       }
 
     if (millis() < start_millis) { // There was an overflow
@@ -71,5 +76,5 @@ bool Transition::transition(const char * filepath, HT1632C &ht1632c) {
 
   file.close();
 
-  return true;
+  return header.get_type() == TYPE_BIG;
 }
