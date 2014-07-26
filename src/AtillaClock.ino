@@ -1,5 +1,8 @@
 #include <SD.h>
 #include <Wire.h>
+#include <SPI.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
 
 #include <ht1632c.h>
 #include <font.h>
@@ -25,6 +28,16 @@ struct Clock {
 RTC_DS1307 ds1307;
 Clock clock;
 
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192, 168, 253, 32);
+unsigned int localPort = 8888;
+IPAddress timeServer(134, 214, 100, 6);
+const int NTP_PACKET_SIZE = 48;
+byte packetBuffer[NTP_PACKET_SIZE];
+EthernetUDP Udp;
+unsigned int last_check = 0;
+#define HOUR_ADD 2
+
 void setup() {
   Serial.begin(9600);
   while (!Serial);
@@ -41,6 +54,9 @@ void setup() {
 
   /* RTC MODULE */
   ds1307.begin(); //start RTC Clock
+
+  Serial.println(__DATE__);
+  Serial.println(__TIME__);
 
   if (!ds1307.isrunning()) {
     Serial.println(F("RTC is NOT running!"));
@@ -64,7 +80,12 @@ void setup() {
   font.print_large_colon(23, 0);
   font.print_large_clock_number(27, 0, clock.minute);
 
-  Serial.println("Everything is working!");
+  Serial.println(F("Starting ethernet..."));
+  Ethernet.begin(mac, ip);
+  Udp.begin(localPort);
+  Serial.println(F("Done ethernet..."));
+
+  Serial.println(F("Everything is working!"));
 }
 
 void loop() {
@@ -85,4 +106,56 @@ void loop() {
     clock.hour = now.hour();
     font.print_large_clock_number(11, 0, clock.hour);
   }
+
+  /* if (last_check != now.hour()) {
+    Serial.println(F("Go..."));
+    sendNTPpacket(timeServer);
+    Serial.println(F("..."));
+
+    if (Udp.parsePacket()) {
+      Serial.println(F("Starting..."));
+      Udp.read(packetBuffer, NTP_PACKET_SIZE);
+
+      unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
+      unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
+      unsigned long secsSince1900 = highWord << 16 | lowWord;
+      const unsigned long seventyYears = 2208988800UL;
+      unsigned long epoch = secsSince1900 - seventyYears;
+
+      uint8_t h = (HOUR_ADD + (epoch % 86400L) / 3600) % 24;
+      uint8_t m = (epoch % 3600) / 60;
+      uint8_t s = epoch / 60;
+
+      ds1307.adjust(DateTime(now.year(), now.month(), now.day(), h, m, s));
+      Serial.println(ds1307.now().minute());
+      last_check = h;
+    }
+
+    Serial.println("Done.");
+  } */
+}
+
+// Send an NTP request to the time server at the given address 
+unsigned long sendNTPpacket(IPAddress& address)
+{
+  memset(packetBuffer, 0, NTP_PACKET_SIZE);
+  packetBuffer[0] = 0b11100011;
+  packetBuffer[1] = 0;
+  packetBuffer[2] = 6;
+  packetBuffer[3] = 0xEC;
+  packetBuffer[12] = 49; 
+  packetBuffer[13] = 0x4E;
+  packetBuffer[14] = 49;
+  packetBuffer[15] = 52;
+
+  Udp.beginPacket(address, 123);
+  Udp.write(packetBuffer, NTP_PACKET_SIZE);
+  Udp.endPacket(); 
+}
+
+static uint8_t conv2d(const char* p) {
+    uint8_t v = 0;
+    if ('0' <= *p && *p <= '9')
+        v = *p - '0';
+    return 10 * v + *++p - '0';
 }
