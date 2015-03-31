@@ -29,7 +29,7 @@ RTC_DS1307 ds1307;
 Clock clock;
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress ip(192, 168, 253, 32);
+IPAddress ip(192, 168, 253, 16);
 unsigned int localPort = 8888;
 IPAddress timeServer(192,168,253,1);
 const int NTP_PACKET_SIZE = 48;
