@@ -31,14 +31,16 @@ Clock clock;
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(192, 168, 253, 16);
 unsigned int localPort = 8888;
-IPAddress timeServer(192,168,253,1);
+IPAddress timeServer(193,48,70,2); //time.eisti.fr
+//IPAddress timeServer(19,168,253,1); //Hydra
 const int NTP_PACKET_SIZE = 48;
 byte packetBuffer[NTP_PACKET_SIZE];
 EthernetUDP Udp;
 unsigned int last_check = 0;
 #define HOUR_ADD 2
-boolean sd_ready = true;
+
 const unsigned long seventyYears = 2208988800UL;
+boolean sd_ready = true;
 
 void setup() {
     Serial.begin(115200);
@@ -47,16 +49,16 @@ void setup() {
     Wire.begin();
     Serial.println("Starting ethernet...");
     if(Ethernet.begin(mac) == 0){
-      Serial.println("Erreur de connection Ethernet DHCP");
+      Serial.println("Erreur de connection Ethernet DHCP, IP manuelle");
       Ethernet.begin(mac, ip);
     }
     Udp.begin(localPort);
     Serial.println("Done ethernet...");
     Serial.print("Adresse IP");for (byte thisByte = 0; thisByte < 4; thisByte++) {
     // print the value of each byte of the IP address:
-    Serial.print(Ethernet.localIP()[thisByte], DEC);
-    Serial.print(":%"); 
-  }
+      Serial.print(Ethernet.localIP()[thisByte], DEC);
+      Serial.print(":%"); 
+    }
   Serial.println();
     Serial.println("Everything is working!");
 
@@ -73,7 +75,7 @@ void setup() {
 
     Serial.println(__DATE__);
     Serial.println(__TIME__);
-    ds1307.adjust(DateTime(__DATE__, __TIME__));
+    //ds1307.adjust(DateTime(__DATE__, __TIME__));
     if (!ds1307.isrunning()) {
         Serial.println("RTC is NOT running!");
         ds1307.adjust(DateTime(__DATE__, __TIME__));
@@ -127,8 +129,10 @@ void loop() {
         sendNTPpacket(timeServer);
         Serial.println(F("..."));
 
-        delay(1000);
-        if (Udp.parsePacket()) {
+        delay(2000);
+        int test  = Udp.parsePacket();
+        Serial.println(test);
+        if(test){
             Serial.println("Starting...");
             Udp.read(packetBuffer, NTP_PACKET_SIZE);
 
@@ -144,10 +148,12 @@ void loop() {
             ds1307.adjust(DateTime(now.year(), now.month(), now.day(), h, m, s));
             Serial.println(ds1307.now().minute());
             last_check = m;
+            Serial.println("Done.");
+        }else{
+          Serial.println("Error.");
         }
-
-        Serial.println("Done.");
-    } 
+        
+    }
 }
 
 // Send an NTP request to the time server at the given address 
@@ -166,3 +172,4 @@ unsigned long sendNTPpacket(IPAddress& address) {
     Udp.write(packetBuffer, NTP_PACKET_SIZE);
     Udp.endPacket(); 
 }
+
